@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "es6",            // Ou uma versão mais recente do ECMAScript, se necessário
+        "module": "esnext",         // Para suportar a sintaxe de módulos ES
+        "baseUrl": ".",             // Permite importar módulos relativos à base do projeto
+        "moduleResolution": "node", // Para resolução de estilo Node.js
+        "allowSyntheticDefaultImports": true, // Permite default imports de módulos sem um export default
+        "esModuleInterop": true     // Permite interoperabilidade entre CommonJS e ES Modules
+    },
+    "exclude": [
+        "node_modules",
+        "app",
+        // Outras pastas a serem excluídas
+    ]
+}
