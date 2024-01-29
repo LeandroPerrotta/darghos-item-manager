@@ -38,6 +38,7 @@ If you lucky. It should gracefully start.
 - [ ] Parse items from SQLite back to .dat in binary format
 - [ ] Move items from one .dat to another .dat (and ofc, move the sprites as well)
 - [ ] Parse changed sprites back to .spr in binary format
+- [ ] Windows build "ready to use" (.exe)
 
 ## Bonus
 
