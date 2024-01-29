@@ -41,3 +41,4 @@ If you lucky. It should gracefully start.
 Things I would like to do if all above is done
 
 - [ ] Read also items.otb and items.xml (server side) integrated with their .dat and .spr, and making all changes to dat also affects .otb (in other words, you would do one change, and it reflects in all items files if needed at once).
+- [ ] Unit tests
