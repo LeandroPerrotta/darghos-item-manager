@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
     mode: 'development', // ou 'production'
-    entry: './src/ui-core/views/index.js', // Ponto de entrada da sua aplicação
+    entry: './src/renderer/views/index.js', // Ponto de entrada da sua aplicação
     output: {
         path: path.resolve(__dirname, 'app/electron'), // Onde os arquivos empacotados serão colocados
         filename: 'bundle.js' // O nome do arquivo empacotado
