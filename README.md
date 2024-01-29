@@ -29,6 +29,9 @@ If you lucky. It should gracefully start.
 
 ### Roadmap
 
+> [!IMPORTANT]
+> This project is in very early development stage, it yet unable to be used as a dat/spr editor, if you looking for this, I recommend already fully working programs like `ObjectBuilder`.
+
 - [x] Parse .dat binary file into SQLite
 - [x] Parse .spr binary to be used to render images on Electron
 - [x] Create a simple page that shows differences on two .dat files based in their attributes (that's my main goal)
