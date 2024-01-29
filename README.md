@@ -30,7 +30,7 @@ If you lucky. It should gracefully start.
 ### Roadmap
 
 > [!IMPORTANT]
-> This project is in very early development stage, it yet unable to be used as a dat/spr editor, if you looking for this, I recommend already fully working programs like `ObjectBuilder`.
+> This project is in very early development stage, it yet unable to be used as a dat/spr editor, if you looking for this, I recommend already fully working programs like `ObjectBuilder` at https://github.com/ottools/ObjectBuilder.
 
 - [x] Parse .dat binary file into SQLite
 - [x] Parse .spr binary to be used to render images on Electron
