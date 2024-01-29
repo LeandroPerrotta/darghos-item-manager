@@ -29,15 +29,15 @@ If you lucky. It should gracefully start.
 
 ### Roadmap
 
-[x] Parse .dat binary file into SQLite
-[x] Parse .spr binary to be used to render images on Electron
-[x] Create a simple page that shows differences on two .dat files based in their attributes (that's my main goal)
-[ ] Parse items from SQLite back to .dat in binary format
-[ ] Move items from one .dat to another .dat (and ofc, move the sprites as well)
-[ ] Parse changed sprites back to .spr in binary format
+- [x] Parse .dat binary file into SQLite
+- [x] Parse .spr binary to be used to render images on Electron
+- [x] Create a simple page that shows differences on two .dat files based in their attributes (that's my main goal)
+- [ ] Parse items from SQLite back to .dat in binary format
+- [ ] Move items from one .dat to another .dat (and ofc, move the sprites as well)
+- [ ] Parse changed sprites back to .spr in binary format
 
 # Bonus
 
 Things I would like to do if all above is done
 
-[ ] Read also items.otb and items.xml (server side) integrated with their .dat and .spr, and making all changes to dat also affects .otb (in other words, you would do one change, and it reflects in all items files if needed at once).
+- [ ] Read also items.otb and items.xml (server side) integrated with their .dat and .spr, and making all changes to dat also affects .otb (in other words, you would do one change, and it reflects in all items files if needed at once).
