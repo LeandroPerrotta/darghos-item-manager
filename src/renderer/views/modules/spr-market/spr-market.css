@@ -1,0 +1,33 @@
+.comparing-item-widget {
+    margin-bottom: 5px;
+    background-color: #b1b0b0;
+    border-bottom: 1px solid #8b8b8b;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.comparing-item-widget.comparing-selected {
+    background-color: #b7d1b8;
+}
+
+.comparing-item-widget:hover {
+    background-color: #f7e2bb;
+}
+
+.comparing-item-widget img {
+    vertical-align: middle;
+    padding: 4px;
+    border: 1px solid #c9c9c9;
+}
+
+.widget-target-sprite img {
+    float: right;
+}
+
+.widget-origin-id {
+    text-align: right;
+}
+
+.widget-json textarea {
+    font-size: 10px !important;
+}

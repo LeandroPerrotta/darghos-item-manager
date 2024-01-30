@@ -4,6 +4,8 @@ import { requestFullLoadFile } from '../../../../ipc-events/full-load-file/rende
 import { SprMarketCompareRepository } from './spr-market-compare-repository';
 import { BootstrapGrid } from '../../components/bootstrap-grid';
 import { Sprite, SpritesCache } from '../../components/sprite';
+import './spr-market.css';
+import { TopNavigation } from '../../components/top-navigation';
 
 const pathes = [];
 const loadedFileIds = {};
@@ -17,13 +19,17 @@ const ComparingJSON = {
 
         const json = vnode.children;
 
-        return Mithril('div', { class: 'form-floating' },
-            Mithril('textarea', { class: 'form-control', disabled: true }, json)
-        )
+        return Mithril('textarea', { class: 'form-control', disabled: true }, json)
     }
 }
 
 const ComparingItem = {
+
+    oninit: function (vnode) {
+
+        vnode.state.isSelected = false;
+    },
+
     view: function (vnode) {
 
         const { row } = vnode.attrs;
@@ -31,13 +37,22 @@ const ComparingItem = {
         const originSprite = new Sprite(spritesCache.getSprite(pathes[0], row.origin_sprites[0]));
         const targetSprite = new Sprite(spritesCache.getSprite(pathes[1], row.target_sprites[0]));
 
-        return Mithril('div', { class: 'row' }, [
-            Mithril('div', { class: 'col-3' }, Mithril(originSprite)),
-            Mithril('div', { class: 'col-3' }, row.origin_id),
-            Mithril('div', { class: 'col-3' }, row.target_id),
-            Mithril('div', { class: 'col-3' }, Mithril(targetSprite)),
-            Mithril('div', { class: 'col-6' }, Mithril(ComparingJSON, row.origin_attributes)),
-            Mithril('div', { class: 'col-6' }, Mithril(ComparingJSON, row.target_attributes)),
+        const selectedClass = vnode.state.isSelected ? ' comparing-selected' : '';
+
+        console.log('selectedClass', selectedClass);
+
+        return Mithril('div', {
+            class: 'row comparing-item-widget' + selectedClass,
+            onclick: () => {
+                vnode.state.isSelected = !vnode.state.isSelected;
+            }
+        }, [
+            Mithril('div', { class: 'col-3 widget-origin-sprite' }, Mithril(originSprite)),
+            Mithril('div', { class: 'col-3 widget-origin-id' }, row.origin_id),
+            Mithril('div', { class: 'col-3 widget-target-id' }, row.target_id),
+            Mithril('div', { class: 'col-3 widget-target-sprite' }, Mithril(targetSprite)),
+            Mithril('div', { class: 'col-6 widget-json' }, Mithril(ComparingJSON, row.origin_attributes)),
+            Mithril('div', { class: 'col-6 widget-json' }, Mithril(ComparingJSON, row.target_attributes)),
         ]);
     }
 }
@@ -45,20 +60,18 @@ const ComparingItem = {
 const ComparingItemList = {
     view: function () {
 
-        const grid = new BootstrapGrid();
+        const childrens = sprMarketCompareRepository.rows.map((row) => Mithril(ComparingItem, { class: 'col-12', row, key: row.origin_id }));
 
-        sprMarketCompareRepository.rows.forEach((row) => {
-
-            grid.addColumn({ class: 'col-12' }, Mithril(ComparingItem, { row }));
-        })
-
-        return Mithril(grid);
+        return Mithril(BootstrapGrid, { style: 'margin-top: 15px;' }, childrens);
     }
 }
 
 const ComparingComponent = {
     view: function () {
-        return Mithril(ComparingItemList);
+        return [
+            Mithril(TopNavigation),
+            Mithril(ComparingItemList)
+        ];
     }
 }
 

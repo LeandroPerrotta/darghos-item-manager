@@ -1,34 +1,17 @@
 import Mithril from 'mithril';
 
-export class BootstrapGrid {
+export const BootstrapGrid = {
 
-    constructor() {
+    view(vnode) {
 
-        this.columns = [];
-        this.rowAttr = { class: 'row' };
-    }
+        const { children, attrs } = vnode;
+        const rowClass = (attrs && attrs.class) ? ' ' + attrs.class : '';
+        const containerStyle = (attrs && attrs.style) ? attrs.style : undefined;
 
-    addColumn(attrs, children) {
-
-        this.columns.push([ attrs, children ]);
-    }
-
-    addRowClass(rowClass) {
-
-        this.rowAttr.class = this.rowAttr.class + ' ' + rowClass;
-    }
-
-    view() {
-
-        const childColumns = this.columns.map((columnAttrs) => {
-
-            const [attrs, children ] = columnAttrs;
-
-            return Mithril('div', attrs, children);
-        })
-
-        return Mithril('div', { class: 'container' }, [
-            Mithril('div', this.rowAttr, childColumns)
+        return Mithril('div', { class: 'container', style: containerStyle }, [
+            Mithril('div', { 
+                class: 'row' + rowClass
+            }, children)
         ]);
-    }
+    }    
 }

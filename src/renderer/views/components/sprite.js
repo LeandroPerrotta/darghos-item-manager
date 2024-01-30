@@ -133,8 +133,10 @@ export class Sprite {
         this.imageBase64 = base64
     }
 
-    view() {
+    view(vnode) {
 
-        return Mithril('img', { src: this.imageBase64 })
+        const { attrs } = vnode;
+
+        return Mithril('img', Object.assign({ src: this.imageBase64 }, attrs))
     }
 }
