@@ -1,6 +1,6 @@
 import { requestQueryRunnerGetAll } from "../../../../ipc-events/query-runner/renderer";
 
-export class SprMarketCompareRepository {
+export class CompareItemsByAttributesRepository {
 
     constructor(originId, targetId) {
 

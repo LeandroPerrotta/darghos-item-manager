@@ -1,16 +1,16 @@
 import Mithril from 'mithril';
 import { LoadingComponent } from '../../components/loading';
 import { requestFullLoadFile } from '../../../../ipc-events/full-load-file/renderer';
-import { SprMarketCompareRepository } from './spr-market-compare-repository';
+import { CompareItemsByAttributesRepository } from './compare-items-by-attributes-repository';
 import { BootstrapGrid } from '../../components/bootstrap-grid';
 import { Sprite, SpritesCache } from '../../components/sprite';
-import './spr-market.css';
+import './compare-items-by-attributes.css';
 import { TopNavigation } from '../../components/top-navigation';
 
 const pathes = [];
 const loadedFileIds = {};
 
-let sprMarketCompareRepository = null;
+let compareItemsByAttributesRepository = null;
 
 const spritesCache = SpritesCache.getInstance();
 
@@ -60,7 +60,7 @@ const ComparingItem = {
 const ComparingItemList = {
     view: function () {
 
-        const childrens = sprMarketCompareRepository.rows.map((row) => Mithril(ComparingItem, { class: 'col-12', row, key: row.origin_id }));
+        const childrens = compareItemsByAttributesRepository.rows.map((row) => Mithril(ComparingItem, { class: 'col-12', row, key: row.origin_id }));
 
         return Mithril(BootstrapGrid, { style: 'margin-top: 15px;' }, childrens);
     }
@@ -75,7 +75,7 @@ const ComparingComponent = {
     }
 }
 
-export class SprMarketCompareModule {
+export class CompareItemsByAttributesModule {
 
     constructor() {
 
@@ -92,9 +92,9 @@ export class SprMarketCompareModule {
             const originId = loadedFileIds[pathes[0]];
             const targetId = loadedFileIds[pathes[1]];
 
-            sprMarketCompareRepository = new SprMarketCompareRepository(originId, targetId);
+            compareItemsByAttributesRepository = new CompareItemsByAttributesRepository(originId, targetId);
 
-            sprMarketCompareRepository.findMissingPickableAttributeItemsOnTarget(this.onFoundItems.bind(this));
+            compareItemsByAttributesRepository.findMissingPickableAttributeItemsOnTarget(this.onFoundItems.bind(this));
 
             Mithril.redraw();
         }
@@ -155,7 +155,7 @@ export class SprMarketCompareModule {
             return Mithril(LoadingComponent, 'Loading files...');
         }
 
-        const comparingItems = sprMarketCompareRepository.rows && sprMarketCompareRepository.rows.length;
+        const comparingItems = compareItemsByAttributesRepository.rows && compareItemsByAttributesRepository.rows.length;
 
         if (!comparingItems) {
 

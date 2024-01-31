@@ -27,7 +27,7 @@ function shoudMergeButtonBeEnabled() {
 
 function onCompareFiles() {
 
-    Mithril.route.set("/spr-market-compare", null, { state: { 
+    Mithril.route.set("/compare-items", null, { state: { 
         paths: [
             DirectoryPathStates.get('dat-1'), 
             DirectoryPathStates.get('dat-2')
@@ -131,12 +131,12 @@ const DirectorySelector = {
     }
 };
 
-export const SprMarketMergeModule = {
+export const CompareItemsFileSelectionModule = {
     view: function () {
         return Mithril("div", [
             Mithril(TopNavigation),
-            Mithril("h1", "Spr Market Merge"),
-            Mithril("p", "This tool is maded to make easier the merge of Market properties from two different Dat files."),
+            Mithril("h1", "Compare Items - File Selection"),
+            Mithril("p", "This tool is maded to make easier to compare properties from two different Dat files and make modifications."),
             Mithril(DirectorySelector),
             Mithril("div", { class: "row d-flex justify-content-center" }, [
                 Mithril("div", { class: 'col-1' }, [

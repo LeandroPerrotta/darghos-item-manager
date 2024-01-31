@@ -28,7 +28,7 @@ const NavItemList = {
         }, [
             Mithril("ul", { class: 'navbar-nav me-auto mb-2 mb-lg-0' }, [
                 Mithril(NavItem, { name: 'Home', url: '/home' }),
-                Mithril(NavItem, { name: 'Spr Market Merge', url: '/spr-market-merge' })
+                Mithril(NavItem, { name: 'Find Items by Attributes', url: '/find-items-by-attributes' })
             ])
         ])
     }
