@@ -125,12 +125,11 @@ export class DatReader {
         assert(item.numPatternZ === 1)
         assert(item.size.width === 1)
         assert(item.size.height === 1)
-        assert(item.attributes.has(AttributesEnum.ThingAttrNotMoveable))
-        assert(item.attributes.has(AttributesEnum.ThingAttrFullGround))
-        assert(item.attributes.has(AttributesEnum.ThingAttrBlockProjectile))
-        assert(item.attributes.has(AttributesEnum.ThingAttrNotWalkable))
-        assert(item.attributes.has(AttributesEnum.ThingAttrGround))
-        assert(item.attributes.get(AttributesEnum.ThingAttrGround) === 0)
+        assert(item.attributes['ThingAttrNotMoveable'])
+        assert(item.attributes['ThingAttrFullGround'])
+        assert(item.attributes['ThingAttrBlockProjectile'])
+        assert(item.attributes['ThingAttrNotWalkable'])
+        assert(item.attributes['ThingAttrGround'] === 0)
     }
 
     readItem(id, category) {
