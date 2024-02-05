@@ -26,10 +26,19 @@ export class SpritesCache {
 
         this.loadingSpritesPromisesByDat.set(hashDat, []);
 
+        let unknownSprites = 0;
+
         sprites.forEach((sprite_id) => {
 
-            this.loadIfUnknownSprite(dat_path, sprite_id);
+            this.loadIfUnknownSprite(dat_path, sprite_id) ? unknownSprites++ : null;
         })
+
+        if(unknownSprites == 0) {
+
+            callback(true);
+
+            return;
+        }
 
         try {
 
@@ -76,12 +85,12 @@ export class SpritesCache {
 
         if(this.knownSprites.has(hashDatAndId)) {
 
-            return;
+            return false;
         }
 
         if(this.loadingSpritesResolves.has(hashDatAndId)) {
 
-            return;
+            return false;
         }
 
         let resolve;
@@ -92,6 +101,8 @@ export class SpritesCache {
         this.loadingSpritesPromisesByDat.get(hashDat).push(promise);
 
         requestLoadSprite(dat_path, sprite_id, this.onLoadSprite.bind(this)); //chama o IPC para carregar a sprite
+
+        return true;
     }
 
     onLoadSprite(dat_path, sprite_id, imageBase64) {
