@@ -31,3 +31,9 @@
 .widget-json textarea {
     font-size: 10px !important;
 }
+
+.compare-items-options-wrapper {
+    background-color: #fff2d6;
+    border: 1px solid #cbc148;
+    border-radius: 6px;
+}

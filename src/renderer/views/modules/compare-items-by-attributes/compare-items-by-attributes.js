@@ -1,17 +1,14 @@
 import Mithril from 'mithril';
 import { LoadingComponent } from '../../components/loading';
 import { requestFullLoadFile } from '../../../../ipc-events/full-load-file/renderer';
-import { CompareItemsByAttributesRepository } from './compare-items-by-attributes-repository';
 import { BootstrapGrid } from '../../components/bootstrap-grid';
 import { Sprite, SpritesCache } from '../../components/sprite';
 import './compare-items-by-attributes.css';
 import { TopNavigation } from '../../components/top-navigation';
+import { CompareItemsByAttributesOptions } from './compare-items-by-attributes-options';
 
 const pathes = [];
 const loadedFileIds = {};
-
-let compareItemsByAttributesRepository = null;
-
 const spritesCache = SpritesCache.getInstance();
 
 const ComparingJSON = {
@@ -39,8 +36,6 @@ const ComparingItem = {
 
         const selectedClass = vnode.state.isSelected ? ' comparing-selected' : '';
 
-        console.log('selectedClass', selectedClass);
-
         return Mithril('div', {
             class: 'row comparing-item-widget' + selectedClass,
             onclick: () => {
@@ -58,30 +53,92 @@ const ComparingItem = {
 }
 
 const ComparingItemList = {
-    view: function () {
+    view: function (vnode) {
 
-        const childrens = compareItemsByAttributesRepository.rows.map((row) => Mithril(ComparingItem, { class: 'col-12', row, key: row.origin_id }));
+        const childrens = vnode.attrs.loadedItems.map((row) => Mithril(ComparingItem, { class: 'col-12', row, key: row.origin_id }));
 
-        return Mithril(BootstrapGrid, { style: 'margin-top: 15px;' }, childrens);
+        return Mithril(BootstrapGrid, { style: 'margin-top: 15px;' }, Mithril('div', { class: 'col-12' }, childrens));
     }
 }
 
 const ComparingComponent = {
-    view: function () {
+    oninit: function (vnode) {
+
+        this.resetStates(vnode);
+    },
+    resetStates: function (vnode) {
+
+        vnode.state.loadedItems = [];
+        vnode.state.loadedSprites = { origin: false, target: false };
+    },
+    isSpritesLoaded: function (vnode) {
+
+        const { loadedSprites } = vnode.state;
+
+        return loadedSprites.origin && loadedSprites.target;
+    },
+    shouldShowItemList: function (vnode) {
+
+        const { loadedItems } = vnode.state;
+
+        return loadedItems.length && this.isSpritesLoaded(vnode);
+    },
+    loadSprites: function (vnode) {
+
+        const { loadedItems } = vnode.state
+
+        const origin_sprites = loadedItems.map((row) => row.origin_sprites[0]);
+        const target_sprites = loadedItems.map((row) => row.target_sprites[0]);
+
+        return [new Promise(resolve => {
+
+            spritesCache.preloadAllSprites(pathes[0], origin_sprites, function () {
+
+                vnode.state.loadedSprites.origin = true;
+
+                resolve();
+            });
+        }), new Promise(resolve => {
+
+            spritesCache.preloadAllSprites(pathes[1], target_sprites, function () {
+
+                vnode.state.loadedSprites.target = true;
+
+                resolve();
+            });
+        })];
+    },
+    view: function (vnode) {
+
+        const originId = loadedFileIds[pathes[0]];
+        const targetId = loadedFileIds[pathes[1]];
+
         return [
             Mithril(TopNavigation),
-            Mithril(ComparingItemList)
+            Mithril(BootstrapGrid, { style: 'margin-top: 15px;' },
+                Mithril(CompareItemsByAttributesOptions, {
+                    onApplyOptions: () => {
+
+                        this.resetStates(vnode);
+                    },
+                    onLoadItems: (loadedItems, onFinishLoad) => {
+
+                        vnode.state.loadedItems = loadedItems;
+
+                        Promise.all(this.loadSprites(vnode)).then(() => {
+
+                            onFinishLoad();
+                            Mithril.redraw();
+                        });
+                    }, originId, targetId
+                })
+            ),
+            this.shouldShowItemList(vnode) ? Mithril(ComparingItemList, { loadedItems: vnode.state.loadedItems }) : null
         ];
     }
 }
 
 export class CompareItemsByAttributesModule {
-
-    constructor() {
-
-        this.loadedOriginSprites = false;
-        this.loadedTargetSprites = false;
-    }
 
     onFileLoaded(path, fileId) {
 
@@ -89,42 +146,10 @@ export class CompareItemsByAttributesModule {
 
         if (this.isFilesLoaded()) {
 
-            const originId = loadedFileIds[pathes[0]];
-            const targetId = loadedFileIds[pathes[1]];
-
-            compareItemsByAttributesRepository = new CompareItemsByAttributesRepository(originId, targetId);
-
-            compareItemsByAttributesRepository.findMissingPickableAttributeItemsOnTarget(this.onFoundItems.bind(this));
-
             Mithril.redraw();
         }
-    }
 
-    /**
-     * 
-     * @param {Array} rows 
-     */
-    onFoundItems(rows) {
-
-        Mithril.redraw();
-
-        console.log(rows);
-
-        const origin_sprites = rows.map((row) => row.origin_sprites[0]);
-        const target_sprites = rows.map((row) => row.target_sprites[0]);
-
-        spritesCache.preloadAllSprites(pathes[0], origin_sprites, (result) => {
-
-            this.loadedOriginSprites = result;
-
-            Mithril.redraw();
-        });
-        spritesCache.preloadAllSprites(pathes[1], target_sprites, (result) => {
-
-            this.loadedTargetSprites = result;
-
-            Mithril.redraw();
-        });
+        console.log('loadedFileIds', loadedFileIds);
     }
 
     isFilesLoaded() {
@@ -153,18 +178,6 @@ export class CompareItemsByAttributesModule {
         if (!this.isFilesLoaded()) {
 
             return Mithril(LoadingComponent, 'Loading files...');
-        }
-
-        const comparingItems = compareItemsByAttributesRepository.rows && compareItemsByAttributesRepository.rows.length;
-
-        if (!comparingItems) {
-
-            return Mithril(LoadingComponent, 'Comparing files to find different market attributes...')
-        }
-
-        if (!this.loadedOriginSprites || !this.loadedTargetSprites) {
-
-            return Mithril(LoadingComponent, 'Loading sprites...')
         }
 
         return Mithril(ComparingComponent);
