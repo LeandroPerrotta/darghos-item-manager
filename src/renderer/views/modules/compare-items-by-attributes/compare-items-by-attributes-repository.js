@@ -6,7 +6,6 @@ export class CompareItemsByAttributesRepository {
 
         this.originId = originId;
         this.targetId = targetId;
-        this.rows = null;
     }
 
     findMissingMarketAttributeItemsOnTarget(callback) {
@@ -31,7 +30,7 @@ export class CompareItemsByAttributesRepository {
 
         requestQueryRunnerGetAll(query, params, (rows) => {
 
-            this.rows = rows.map(row => {
+            const formattedRows = rows.map(row => {
 
                 row.origin_sprites = JSON.parse(row.origin_sprites);
                 row.target_sprites = JSON.parse(row.target_sprites);
@@ -39,7 +38,7 @@ export class CompareItemsByAttributesRepository {
                 return row;
             })
 
-            callback(this.rows);
+            callback(formattedRows);
         });
     }
 
@@ -65,7 +64,7 @@ export class CompareItemsByAttributesRepository {
 
         requestQueryRunnerGetAll(query, params, (rows) => {
 
-            this.rows = rows.map(row => {
+            const formattedRows = rows.map(row => {
 
                 row.origin_sprites = JSON.parse(row.origin_sprites);
                 row.target_sprites = JSON.parse(row.target_sprites);
@@ -73,7 +72,7 @@ export class CompareItemsByAttributesRepository {
                 return row;
             })
 
-            callback(this.rows);
+            callback(formattedRows);
         });
     }    
 }
