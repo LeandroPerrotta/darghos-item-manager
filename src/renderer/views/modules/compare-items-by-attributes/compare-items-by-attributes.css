@@ -37,3 +37,17 @@
     border: 1px solid #cbc148;
     border-radius: 6px;
 }
+
+.compare-items-options-wrapper .panel-title {
+    border-bottom: var(--bs-border-width) var(--bs-border-style) #cbbf1c!important;
+}
+
+.compare-items-action-wrapper {
+    background-color: #f0f7e5;
+    border: 1px solid #8d9b8c;
+    border-radius: 6px;
+}
+
+.compare-items-action-wrapper .panel-title {
+    border-bottom: var(--bs-border-width) var(--bs-border-style) #a5b9a1!important;
+}

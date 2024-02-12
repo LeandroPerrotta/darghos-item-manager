@@ -1,5 +1,5 @@
 import Mithril from "mithril";
-import { BootstrapGrid } from "./bootstrap-grid";
+import { Panel, PanelBuilder } from "./panel";
 
 export const LoadingComponent = {
     view: function(vnode) {
@@ -9,7 +9,15 @@ export const LoadingComponent = {
             Mithril('div', { class: 'spinner-border ms-auto float-end', ['aria-hidden']: 'true' })
         ];
 
-        return Mithril(BootstrapGrid, { class: 'd-flex justify-content-center', style: 'margin-top: 15px;' },
-            Mithril('div', { class: 'col-6 d-flex align-items-center' }, Spinner));
+        const panelBuilder = new PanelBuilder();
+
+        panelBuilder.isContainer();
+
+        panelBuilder.addRowClass('d-flex');
+        panelBuilder.addRowClass('justify-content-center');
+
+        panelBuilder.addColumn(Spinner, 'col-6 d-flex align-items-center')
+
+        return Mithril(Panel, { builder: panelBuilder });
     }
 }

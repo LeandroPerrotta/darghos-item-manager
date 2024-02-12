@@ -1,11 +1,12 @@
 import Mithril from 'mithril';
 import { LoadingComponent } from '../../components/loading';
 import { requestFullLoadFile } from '../../../../ipc-events/full-load-file/renderer';
-import { BootstrapGrid } from '../../components/bootstrap-grid';
 import { Sprite, SpritesCache } from '../../components/sprite';
 import './compare-items-by-attributes.css';
 import { TopNavigation } from '../../components/top-navigation';
 import { CompareItemsByAttributesOptions } from './compare-items-by-attributes-options';
+import { CompareItemsByAttributesAction, SelectedItemsCounter } from './compare-items.by-attributes-action';
+import { Panel, PanelBuilder } from '../../components/panel';
 
 const pathes = [];
 const loadedFileIds = {};
@@ -40,6 +41,10 @@ const ComparingItem = {
             class: 'row comparing-item-widget' + selectedClass,
             onclick: () => {
                 vnode.state.isSelected = !vnode.state.isSelected;
+                
+                vnode.state.isSelected 
+                    ? SelectedItemsCounter.append(row.origin_id)
+                    : SelectedItemsCounter.remove(row.origin_id);
             }
         }, [
             Mithril('div', { class: 'col-3 widget-origin-sprite' }, Mithril(originSprite)),
@@ -55,9 +60,14 @@ const ComparingItem = {
 const ComparingItemList = {
     view: function (vnode) {
 
-        const childrens = vnode.attrs.loadedItems.map((row) => Mithril(ComparingItem, { class: 'col-12', row, key: row.origin_id }));
+        const panelConfigBuilder = new PanelBuilder('Item list');
 
-        return Mithril(BootstrapGrid, { style: 'margin-top: 15px;' }, Mithril('div', { class: 'col-12' }, childrens));
+        const itemList = vnode.attrs.loadedItems.map((row) => Mithril(ComparingItem, { row, key: row.origin_id }));
+
+        panelConfigBuilder.isContainer();
+        panelConfigBuilder.addColumn(itemList, 'col-sm-12');
+
+        return Mithril(Panel, { style: 'margin-top: 15px;', builder: panelConfigBuilder });
     }
 }
 
@@ -113,26 +123,34 @@ const ComparingComponent = {
         const originId = loadedFileIds[pathes[0]];
         const targetId = loadedFileIds[pathes[1]];
 
+        const OptionsForm = Mithril(CompareItemsByAttributesOptions, {
+            onApplyOptions: () => {
+
+                this.resetStates(vnode);
+            },
+            onLoadItems: (loadedItems, onFinishLoad) => {
+
+                vnode.state.loadedItems = loadedItems;
+
+                Promise.all(this.loadSprites(vnode)).then(() => {
+
+                    onFinishLoad();
+                    Mithril.redraw();
+                });
+            }, originId, targetId
+        });
+
+        const ActionForm = Mithril(CompareItemsByAttributesAction);
+
+        const panelBuilder = new PanelBuilder();
+
+        panelBuilder.isContainer();
+        panelBuilder.addColumn(OptionsForm, 'compare-items-options-wrapper');
+        panelBuilder.addColumn(ActionForm, 'compare-items-action-wrapper');
+
         return [
             Mithril(TopNavigation),
-            Mithril(BootstrapGrid, { style: 'margin-top: 15px;' },
-                Mithril(CompareItemsByAttributesOptions, {
-                    onApplyOptions: () => {
-
-                        this.resetStates(vnode);
-                    },
-                    onLoadItems: (loadedItems, onFinishLoad) => {
-
-                        vnode.state.loadedItems = loadedItems;
-
-                        Promise.all(this.loadSprites(vnode)).then(() => {
-
-                            onFinishLoad();
-                            Mithril.redraw();
-                        });
-                    }, originId, targetId
-                })
-            ),
+            Mithril(Panel, { builder: panelBuilder }),
             this.shouldShowItemList(vnode) ? Mithril(ComparingItemList, { loadedItems: vnode.state.loadedItems }) : null
         ];
     }

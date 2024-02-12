@@ -1,5 +1,6 @@
 import Mithril from "mithril"
 import { CompareItemsByAttributesRepository } from "./compare-items-by-attributes-repository";
+import { FormGroup, FormGroupBuilder } from "../../components/form-group";
 
 const findItemsByCriteria = [
     { label: 'Missing market attributes on left', value: 'missing_market_attributes' },
@@ -23,11 +24,11 @@ export const CompareItemsByAttributesOptions = {
 
         return true;
     },
-    onFinishLoad: function(vnode) {
+    onFinishLoad: function (vnode) {
 
         vnode.state.isLoading = false;
     },
-    onApply: function(vnode) {
+    onApply: function (vnode) {
 
         vnode.state.isLoading = true;
 
@@ -39,7 +40,7 @@ export const CompareItemsByAttributesOptions = {
 
         const self = this;
 
-        const onLoadItemsCallback = function(loadedItems) {
+        const onLoadItemsCallback = function (loadedItems) {
 
             onLoadItems(loadedItems, () => self.onFinishLoad(vnode));
         };
@@ -55,40 +56,19 @@ export const CompareItemsByAttributesOptions = {
 
         const criteriaOptions = findItemsByCriteria.map((criteria) => Mithril('option', { value: criteria.value }, criteria.label));
 
-        return [
-            Mithril('div', { class: 'col p-2 compare-items-options-wrapper' }, [
+        const formGroupBuilder = new FormGroupBuilder('Filters')
+            .addSelect({ 
+                title: 'Select an find criteria', 
+                selected: !vnode.state.criteria, 
+                onchange: (event) => this.onSelectCriteria(event.target.value, vnode), 
+                options: criteriaOptions })
+            .addSubmitButton({ 
+                label: 'Apply', 
+                isLoading: vnode.state.isLoading, 
+                disabled: !vnode.state.isLoading ? !vnode.state.canApply : true, 
+                onclick: () => this.onApply(vnode)
+            });
 
-                Mithril('div', { class: 'row' }, [
-
-                    Mithril('div', { class: 'col-4' }, [
-
-                        Mithril('select', {
-                            onchange: (event) => this.onSelectCriteria(event.target.value, vnode), class: 'form-select form-select-sm'
-                        }, [
-                            Mithril('option', { selected: !vnode.state.criteria, disabled: true }, 'Select an find criteria'),
-                            ...criteriaOptions
-                        ])
-                    ])
-                ]),
-
-                Mithril('div', { class: 'row mt-2 justify-content-end' }, [
-
-                    Mithril('div', { class: 'col-2' }, [
-
-                        !vnode.state.isLoading 
-                            ? 
-                                Mithril('button', {
-                                    class: 'btn btn-primary btn-sm', disabled: !vnode.state.canApply, onclick: () => this.onApply(vnode)
-                                }, 'Apply') 
-                            : 
-                                Mithril('button', {
-                                    class: 'btn btn-primary btn-sm', disabled: true }, [
-                                        Mithril('span', { class: 'spinner-border spinner-border-sm', "aria-hidden": true }),
-                                        Mithril('span', { role: 'status' }, ' Loading...')
-                                    ])                             
-                    ])
-                ])
-            ])
-        ];
+        return Mithril(FormGroup, { builder: formGroupBuilder });
     }
 }
