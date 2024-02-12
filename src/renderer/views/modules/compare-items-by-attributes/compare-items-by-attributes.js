@@ -5,7 +5,7 @@ import { Sprite, SpritesCache } from '../../components/sprite';
 import './compare-items-by-attributes.css';
 import { TopNavigation } from '../../components/top-navigation';
 import { CompareItemsByAttributesOptions } from './compare-items-by-attributes-options';
-import { CompareItemsByAttributesAction, SelectedItemsCounter } from './compare-items.by-attributes-action';
+import { CompareItemsByAttributesAction, SelectedItemsCounter } from './compare-items-by-attributes-action';
 import { Panel, PanelBuilder } from '../../components/panel';
 
 const pathes = [];
